@@ -1,20 +1,21 @@
 import { useNavigation } from '@react-navigation/core'
 import React, { useLayoutEffect } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View, SafeAreaView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+
 import { signOut } from 'firebase/auth'
 //import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
-import { FlatList } from 'react-native-gesture-handler'
+import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import { 
   collection, 
   addDoc, 
   orderBy, 
   query, 
-  onSnapshot
+  onSnapshot,
+  where
  } from 'firebase/firestore';
  import { auth, database } from '../../firebase'
- import firestore from '@react-native-firebase/firestore';
  import Ejercicio from '../components/Ejercicio';
 
 const HomeScreen = () => {
@@ -23,7 +24,8 @@ const HomeScreen = () => {
 
   React.useEffect(() => {
     const collectionRef = collection(database, 'entrenamientos');
-    const q = query(collectionRef)
+    const q = query(collectionRef, where("emailCliente", "==", auth.currentUser.email))
+
 
     const unsuscribe = onSnapshot(q, querySnapshot => {
       setEjercicios(
@@ -60,6 +62,7 @@ const HomeScreen = () => {
 
 
   return (
+    <ScrollView>
     <View style = {styles.container}>
 
     <Text style = {styles.title}> Bienvenido: {auth.currentUser?.email} </Text>
@@ -68,7 +71,8 @@ const HomeScreen = () => {
     {ejercicios.map(ejercicio => <Ejercicio key={ejercicio.id} {...ejercicio}/>)}
 
 
-  </View>
+    </View>
+    </ScrollView>
   )
 }
 

@@ -1,16 +1,27 @@
 import { useNavigation } from '@react-navigation/core'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import { auth } from '../../firebase'
+
 import { signOut } from 'firebase/auth'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { async } from '@firebase/util'
+import { FlatList, ScrollView } from 'react-native-gesture-handler'
+import { 
+  collection, 
+  addDoc, 
+  orderBy, 
+  query, 
+  onSnapshot,
+  where
+ } from 'firebase/firestore';
+ import { auth, database } from '../../firebase'
+ import Perfil from '../components/Perfil';
 
 const HorarioScreen = () => {
 
     const navigation = useNavigation()
-
+    
     const [fontsLoaded, setFontsLoaded] = useState(false);
 
     useEffect(() => {
@@ -52,27 +63,52 @@ const HorarioScreen = () => {
     });
   }, [navigation]);
 
+
+
+  const [perfiles, setPerfiles] = React.useState ([]);
+
+  React.useEffect(() => {
+    const collectionRef = collection(database, 'users');
+    const q = query(collectionRef, where("email", "==", auth.currentUser.email))
+
+
+    const unsuscribe = onSnapshot(q, querySnapshot => {
+      setPerfiles(
+        querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          nombreusuario: doc.data().nombreusuario,
+          nombreapellido: doc.data().nombreapellido,
+          email: doc.data().email,
+          telefono: doc.data().telefono,
+          
+        })
+        )
+      )})
+      return unsuscribe;
+  }, [])
+  
+
+
   return (
-    <View style={styles.container}>
+    <ScrollView>
+      <View style={styles.container}>
 
-    <TouchableOpacity 
-        style={{ marginRight: 10 }}
-        onPress={handleSignOut}>
-    </TouchableOpacity>
+        <TouchableOpacity 
+            style={{ marginRight: 10 }}
+            onPress={handleSignOut}>
+        </TouchableOpacity>
 
-        <View style={styles.header}>
-            <Text>Alguna información relevante de su perfil:</Text>
+        <View>
+        {perfiles.map(perfil => <Perfil key={perfil.id} {...perfil}/>)}
         </View>
 
-        <View style={styles.body}>
-            <Text>Email: {auth.currentUser?.email} </Text>
-        </View>
+        <Image style={styles.imagen}
+        source={{uri: 'https://firebasestorage.googleapis.com/v0/b/gym-mc-51f29.appspot.com/o/logo.png?alt=media&token=43d87915-2a04-44fa-9702-0382fad682e2'}}
+        />
 
-        <Image
-            style={{ width: 250, height: 250, marginBottom: 30, marginTop: 30 }}
-            source={{uri: 'https://firebasestorage.googleapis.com/v0/b/gym-mc-51f29.appspot.com/o/logo.png?alt=media&token=43d87915-2a04-44fa-9702-0382fad682e2'}}
-            />
-  </View>
+      </View>
+
+    </ScrollView>
   )
 }
 
@@ -80,10 +116,18 @@ export default HorarioScreen
 
 const styles = StyleSheet.create({
     container: {
-      fontFamily: 'roboto-Bold',
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'center',
+      //alignItems: 'center',
+    },
+    imagen: {
+      flex: 1,
+      justifyContent: 'center',
+      alignSelf: 'center',
+      width: 250, 
+      height: 250, 
+      marginBottom: 30, 
+      marginTop: 10
     },
     header: {
         fontFamily: 'roboto-Bold',
