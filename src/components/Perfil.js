@@ -2,6 +2,13 @@ import * as React from 'react';
 import * as RN from 'react-native'
 import { auth, database } from '../../firebase'
 
+<<<<<<< HEAD
+=======
+import { MaterialIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+
+>>>>>>> 6b65784d893c57aba363bb1be81549723f81e2b1
 export default function Perfil({
     id,
     nombreusuario,
@@ -11,6 +18,7 @@ export default function Perfil({
 }) {
     return(
         <RN.View style={styles.ejercicioContainer}>
+<<<<<<< HEAD
             <RN.Text style={styles.titulo}>Nombre usuario: </RN.Text>
             <RN.Text style={styles.datos}>{nombreusuario}</RN.Text>
             <RN.Text></RN.Text>
@@ -24,6 +32,22 @@ export default function Perfil({
             <RN.Text></RN.Text>
 
             <RN.Text style={styles.titulo}>Nombre teléfono: </RN.Text>
+=======
+            
+            <RN.Text style={styles.titulo}><FontAwesome5 name="user" size={24} color="black" /> Nombre usuario: </RN.Text>
+            <RN.Text style={styles.datos}>{nombreusuario}</RN.Text>
+            <RN.Text></RN.Text>
+
+            <RN.Text style={styles.titulo}><FontAwesome5 name="user-cog" size={24} color="black" /> Nombre y Apellidos: </RN.Text>
+            <RN.Text style={styles.datos}>{nombreapellido}</RN.Text>
+            <RN.Text></RN.Text>
+
+            <RN.Text style={styles.titulo}><MaterialIcons name="email" size={24} color="black" /> Email: </RN.Text>
+            <RN.Text style={styles.datos}>{email}</RN.Text>
+            <RN.Text></RN.Text>
+
+            <RN.Text style={styles.titulo}><Feather name="phone" size={24} color="black" /> Teléfono: </RN.Text>
+>>>>>>> 6b65784d893c57aba363bb1be81549723f81e2b1
             <RN.Text style={styles.datos}>{telefono}</RN.Text>
         </RN.View>
     )
