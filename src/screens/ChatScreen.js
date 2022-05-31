@@ -25,14 +25,14 @@ export default function ChatScreen () {
 
  useLayoutEffect(() => {
    const collectionRef = collection(database, 'chats2');
-   const q = query(collectionRef);
+   const q = query(collectionRef).orderBy(timestamp);
    
 
    const unsubscribe = onSnapshot(q, querySnapshot => {
     setMessages(
       querySnapshot.docs.map(doc => ({
-        _id: doc.data()._id,
-        
+        id: doc.data().id,
+        timestamp: Date.now(),
         text: doc.data().text,
         user: doc.data().user
       }))
@@ -45,9 +45,9 @@ export default function ChatScreen () {
  const onSend = useCallback((messages = []) => {
    setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
 
-   const { _id,  text, user}  = messages[0];
+   const { id,  text, user}  = messages[0];
    addDoc(collection(database, 'chats2'), {
-     _id,
+     id,
      
      text,
      user
@@ -106,7 +106,7 @@ function renderBubble(props) {
      messages={messages}
      onSend={messages => onSend(messages)}
      user={{
-      _id: auth.currentUser?.email,
+      id: auth.currentUser?.email,
       avatar: 'https://firebasestorage.googleapis.com/v0/b/gym-mc-51f29.appspot.com/o/logo.png?alt=media&token=43d87915-2a04-44fa-9702-0382fad682e2'
     }}
 
